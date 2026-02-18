@@ -1,21 +1,21 @@
 import java.util.*;
 public class User {
     private String name;
-    private ArrayList<String> inventory;
-    private ArrayList<Rod> rods;
+    final ArrayList<Item> inventory;
     private Rod rod;
+    private double money;
 
     public User(String name) {
         this.name = name;
         this.inventory = new ArrayList<>();
-        this.rods = new ArrayList<>();
+        this.money = 100.0;
     }
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<String> getInventory() {
+    public ArrayList<Item> getInventory() {
         return inventory;
     }
     
@@ -23,38 +23,35 @@ public class User {
         this.name = name;
     }
 
-    public ArrayList<Rod> getRods() {
-        return rods;
-    }
-
     public Rod getRod() {
         return rod;
+    }
+
+    public double getMoney() {
+        return money;
     }
 
     public void setRod(Rod rod) {
         this.rod = rod;
     }
 
-    public void addRod(Rod rod) {
-        for (int i = 0; i < rods.size(); i++) {
-            if (rods.get(i) == null) {
-                rods.set(i, rod);
-                return;
-            }
-        }
-        rods.add(rod);
+    public void setMoney(double money) {
+        this.money = money;
     }
 
-    public void setupRods() {
-        for (int i = 0; i < rods.size(); i++) {
-            if (rods.get(i) == null) {
-                rods.set(i, new Rod("Basic Rod", 5.0, 10.0));
-            }
-        }
-        rod = rods.get(0);
+    public void addMoney(double amount) {
+        this.money += amount;
     }
 
-    public void addToInventory(String item) {
+    public void rmvMoney(double amount) {
+        if (money >= amount) {
+            this.money -= amount;
+        } else {
+            System.out.println(name + ", you don't have enough money!");
+        }
+    }
+
+    public void addToInventory(Item item) {
         for (int i = 0; i < inventory.size(); i++) {
             if (inventory.get(i) == null) {
                 inventory.set(i, item);
@@ -64,6 +61,7 @@ public class User {
         inventory.add(item);
     }
 
+    @Override
     public String toString() {
         return "Name: " + name + ", Inventory: " + inventory + ", Rod: " + rod;
     }

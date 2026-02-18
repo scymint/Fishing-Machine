@@ -1,22 +1,29 @@
-public class Fish {
-    private String name;
+public class Fish extends Item {
     private int age;
     private double weight;
     
+    public Fish(String name, double price, String description, int age, double weight) {
+        super(name, price, description);
+        this.age = age;
+        this.weight = weight;
+    }
+    
+    public Fish(String name, double price, int age, double weight) {
+        super(name, price, "Its just a fish");
+        this.age = age;
+        this.weight = weight;
+    }
+
     public Fish(String name, int age, double weight) {
-        this.name = name;
+        super(name,0.0,"Its just a fish");
         this.age = age;
         this.weight = weight;
     }
 
     public Fish(String name) {
-        this.name = name;
+        super(name, 0, "Its just a fish");
         this.age = 0;
         this.weight = 0.0;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getAge() {
@@ -27,10 +34,6 @@ public class Fish {
         return weight;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setAge(int age) {
         this.age = age;
     }
@@ -39,7 +42,8 @@ public class Fish {
         this.weight = weight;
     }
 
+    @Override
     public String toString() {
-        return "Name: " + name + ", age: " + age + ", weight: " + weight + " kg";
+        return "Name: " + super.getName() + ", age: " + age + " years old, weight: " + weight + " kg, price: $" + super.getPrice();
     }
 }

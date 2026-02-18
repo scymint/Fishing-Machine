@@ -22,4 +22,8 @@ public class Randomizer {
         int index = randomInt(0, fishNames.length - 1);
         return fishNames[index];
     }
+
+    public static double randomPrice(double min, double max) {
+        return Math.round((Math.random() * (max - min) + min) * 100.0) / 100.0;
+    }
 }
