@@ -8,20 +8,20 @@ public class Item {
         this.name = name;
         this.price = 1.0;
         this.description = "No description available";
-        this.type = "Generic Item";
+        this.type = type != null ? type : "Generic Item";
     }
     public Item(String name, double price) {
         this.name = name;
         this.price = price;
         this.description = "No description available";
-        this.type = "Generic Item";
+        this.type = type != null ? type : "Generic Item";
     }
 
     public Item(String name, double price, String description) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.type = "Generic Item";
+        this.type = type != null ? type : "Generic Item";
     }
 
     public Item(String name, double price, String description, String type) {

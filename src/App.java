@@ -33,6 +33,7 @@ public class App {
                 + "! Welcome to the Fishing Machine. You can catch fish and add them to your inventory. Let's start fishing!");
 
         while (true) {
+            System.out.println("");
             System.out.println(
                     "Type 'fish' to catch a fish, 'inventory' to view your inventory, 'shop' to view the shop, \n'balance' to view your balance, 'buy' to buy an item, 'sell' to sell an item, 'equip' to equip a rod, or 'exit' to quit.");
             String input = scanner.nextLine();
@@ -42,9 +43,22 @@ public class App {
 
             if (cmd.equalsIgnoreCase("fish")) {
 
-                Fish fish = new Fish(randomizer.randomFishName(), randomizer.randomPrice(0, 100),
-                        randomizer.randomInt(1, 10),
-                        randomizer.randomDouble(0.5, 5.0));
+                /*
+                 * BigDecimal weight = BigDecimal
+                 * .valueOf(randomizer.randomDouble(1.0, 5.0) *
+                 * randomizer.randomStatMultiplier(user))
+                 * .setScale(2, BigDecimal.ROUND_HALF_UP);
+                 * double weightDouble = weight.doubleValue();
+                 */
+
+                double weightDouble = Math.round(randomizer.randomDouble(1.0, 5.0) * 100.0) / 100.0;
+                if (weightDouble <= 0.0)
+                    weightDouble = 0.01;
+
+                double price = Randomizer.priceFromWeight(weightDouble, user);
+
+                Fish fish = new Fish(randomizer.randomFishName(), price, randomizer.randomInt(1, 15), weightDouble);
+
                 user.addToInventory(fish);
                 System.out.println("You caught a " + fish.getName() + "! Its age is " + fish.getAge()
                         + " years old and it weighs " + fish.getWeight() + " kg. Its price is $" + fish.getPrice());
@@ -85,21 +99,45 @@ public class App {
                 try {
                     int itemIndex = Integer.parseInt(itemIndexStr);
                     shop.buyItem(user, itemIndex);
-                    System.out.println("You have successfully bought " + shop.getItems().get(itemIndex - 1).getName() + ". Your current balance is: $" + user.getMoney());
+                    System.out.println("You have successfully bought " + shop.getItems().get(itemIndex - 1).getName()
+                            + ". Your current balance is: $" + user.getMoney());
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a valid item number.");
                 }
 
             } else if (cmd.equalsIgnoreCase("sell")) {
-                System.out.println("Enter the number of the item in your inventory that you want to sell:");
-                String itemIndexStr = scanner.nextLine();
-                try {
-                    int itemIndex = Integer.parseInt(itemIndexStr);
-                    String itemName = user.getInventory().get(itemIndex - 1).getName();
-                    shop.sellItem(user, itemIndex);
-                    System.out.println("You have successfully sold " + itemName + ". Your current balance is: $" + user.getMoney());
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a valid item number.");
+                if (user.getInventory() == null || user.getInventory().isEmpty()) {
+                    System.out.println("Your inventory is empty. You have nothing to sell.");
+                    continue;
+                }
+
+                System.out.println("Do you want to sell everything in your inventory? (yes/no)");
+                String sellAllResponse = scanner.nextLine();
+                if (sellAllResponse.equalsIgnoreCase("yes")) {
+                    double totalEarnings = 0.0;
+                    for (Item item : user.getInventory()) {
+                        if (item != null) {
+                            totalEarnings += item.getPrice();
+                        }
+                    }
+                    user.addMoney(totalEarnings);
+                    user.getInventory().clear();
+                    System.out.println("You have sold everything in your inventory for a total of $" + totalEarnings
+                            + ". Your current balance is: $" + user.getMoney());
+                } else if (sellAllResponse.equalsIgnoreCase("no")) {
+                    System.out.println("Enter the number of the item in your inventory that you want to sell:");
+                    String itemIndexStr = scanner.nextLine();
+                    try {
+                        int itemIndex = Integer.parseInt(itemIndexStr);
+                        String itemName = user.getInventory().get(itemIndex - 1).getName();
+                        shop.sellItem(user, itemIndex);
+                        System.out.println("You have successfully sold " + itemName + ". Your current balance is: $"
+                                + user.getMoney());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid item number.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
                 }
             } else if (cmd.equalsIgnoreCase("equip")) {
                 System.out.println("Enter the number of the rod in your inventory that you want to equip:");
